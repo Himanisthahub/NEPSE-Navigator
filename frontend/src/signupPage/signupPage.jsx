@@ -22,6 +22,10 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Log form data to the console
+    console.log("Form Data Submitted:", formData);
+
+    // Validate input data
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -33,22 +37,33 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/signup", {
+      const response = await fetch("http://localhost:8000/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: `${formData.firstName} ${formData.lastName}`,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
+          confirmPassword: formData.confirmPassword,
         }),
       });
 
       const result = await response.json();
+      console.log(result);
 
       if (response.ok) {
         alert(result.message || "Account created successfully!");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          agreeToTerms: false,
+        });
       } else {
         alert(result.detail || "Something went wrong!");
       }
@@ -60,8 +75,7 @@ const SignupPage = () => {
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
-      {/* Right Section Only */}
-      <div className="w-1/2 px-16 py-8">
+      <div className="w-1/2 px-16 py-8 bg-white rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-4 text-gray-800">Create an Account</h2>
         <p className="mb-6 text-sm text-gray-600">
           Already Have an Account? <a href="#" className="text-blue-500 underline">LOG IN</a>
