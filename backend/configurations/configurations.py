@@ -1,9 +1,10 @@
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+import os
 
-uri = "mongodb+srv://database:dbpassword@userdata.o9orl.mongodb.net/?retryWrites=true&w=majority&appName=userdata"
 
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-db = client.userdata
-collection_name = db["users"]
+class Settings:
+    MONGODB_URI = os.getenv("MONGODB_URI", "mongodb+srv://database:dbpassword@userdata.o9orl.mongodb.net/?retryWrites=true&w=majority&appName=userdata")
+    SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key_here")
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+settings = Settings()

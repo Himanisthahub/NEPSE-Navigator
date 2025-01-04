@@ -7,3 +7,6 @@ class User(BaseModel):
     email: EmailStr
     password: str
     confirmPassword: str
+    
+    class Config:
+        fields = {"confirmPassword": {"exclude": True}}

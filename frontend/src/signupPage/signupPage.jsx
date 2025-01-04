@@ -1,5 +1,6 @@
+import { GoogleLogin } from "@react-oauth/google"; // Import GoogleLogin
 import React, { useState } from "react";
-import logo from "../assets/google-logo-on-transparent-white-background-free-vector.jpg";
+import { Link } from "react-router-dom";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -22,10 +23,6 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Log form data to the console
-    console.log("Form Data Submitted:", formData);
-
-    // Validate input data
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -36,23 +33,27 @@ const SignupPage = () => {
       return;
     }
 
+    await handleSignup({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    });
+  };
+
+  const handleSignup = async (signupData) => {
     try {
-      const response = await fetch("http://localhost:8000/auth/register", {
+      const response = await fetch("http://127.0.0.1:8000/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-        }),
+        body: JSON.stringify(signupData),
       });
 
       const result = await response.json();
-      console.log(result);
+      console.log("Backend Response:", result);
 
       if (response.ok) {
         alert(result.message || "Account created successfully!");
@@ -65,7 +66,16 @@ const SignupPage = () => {
           agreeToTerms: false,
         });
       } else {
-        alert(result.detail || "Something went wrong!");
+        // Check for specific error message when user already exists
+        if (result.detail && result.detail.includes("already exists")) {
+          alert("User already exists. Please try logging in.");
+        } else {
+          alert(
+            result.detail
+              ? result.detail.map((err) => err.msg).join(", ")
+              : "Something went wrong!"
+          );
+        }
       }
     } catch (error) {
       console.error("Error during signup:", error);
@@ -73,13 +83,37 @@ const SignupPage = () => {
     }
   };
 
+  const handleGoogleLogin = async (response) => {
+    console.log("Google Login Response:", response);
+
+    try {
+      // Decode JWT for user information
+      const payload = JSON.parse(atob(response.credential.split(".")[1]));
+      console.log("Decoded User Info:", payload);
+
+      const googleAuthData = {
+        firstName: payload.given_name || "GoogleUser",
+        lastName: payload.family_name || "User",
+        email: payload.email,
+        password: "google_oauth_placeholder", // Placeholder for compatibility
+        confirmPassword: "google_oauth_placeholder", // Placeholder for compatibility
+      };
+
+      await handleSignup(googleAuthData);
+    } catch (error) {
+      console.error("Error posting to backend:", error);
+      alert("Failed to log in with Google. Please try again later.");
+    }
+  };
+
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="w-1/2 px-16 py-8 bg-white rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-4 text-gray-800">Create an Account</h2>
-        <p className="mb-6 text-sm text-gray-600">
-          Already Have an Account? <a href="#" className="text-blue-500 underline">LOG IN</a>
-        </p>
+        <Link to={"/login"} className="mb-6 text-sm text-gray-600">
+          Already Have an Account?{" "}
+          <span className="text-blue-500 underline">LOG IN</span>
+        </Link>
         <form onSubmit={handleSubmit}>
           <div className="flex gap-4 mb-4">
             <input
@@ -149,18 +183,15 @@ const SignupPage = () => {
             Create Account
           </button>
         </form>
+
+        {/* Google OAuth Button */}
         <div className="mt-6 text-center">
           <p className="mb-2 text-gray-600">Or login with</p>
-          <button
-            className="flex items-center justify-center w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 font-bold shadow-sm hover:bg-gray-100"
-          >
-            <img
-              src={logo}
-              alt="Google"
-              className="mr-2 h-5 w-5"
-            />
-            Google
-          </button>
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={(error) => console.log("Google Login Error:", error)}
+            useOneTap // Optional: for showing Google One Tap
+          />
         </div>
       </div>
     </div>

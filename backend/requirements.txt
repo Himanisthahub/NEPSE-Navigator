@@ -1,0 +1,9 @@
+fastapi==0.95.2  # Version can vary; ensure compatibility
+uvicorn[standard]==0.22.0  # For running the FastAPI server
+pydantic==1.10.12  # Ensure it matches your FastAPI version
+passlib[bcrypt]==1.7.4  # For password hashing
+# python-jose==3.3.0  # For JWT creation and verification
+motor==3.1.1  # Async MongoDB driver
+pymongo==4.3.3  # For MongoDB client
+dnspython==2.3.0  # Required for connecting to MongoDB Atlas
+PyJWT==2.8.0

@@ -2,22 +2,31 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.auth import router as auth_router
 
-app = FastAPI()
-
-# Configure CORS
-origins = ["http://localhost", "http://localhost:5173"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
+app = FastAPI(
+    title="FastAPI Authentication System",
+    description="A system for handling user authentication and registration.",
+    version="1.0.0",
 )
 
-# Include routes
-app.include_router(auth_router, prefix="/auth")
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Replace with your frontend's origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# Include the authentication routes
+app.include_router(auth_router)
+
+@app.get("/", tags=["Root"])
+async def root():
+    """
+    Root endpoint to confirm that the API is running.
+    """
+    return {
+        "message": "Welcome to the FastAPI Authentication System!",
+        "documentation_url": "/docs",
+        "authentication_routes": "/auth",
+    }
