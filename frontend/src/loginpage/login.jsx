@@ -64,19 +64,15 @@ const LoginPage = () => {
     try {
       console.log("Google credential response:", credentialResponse);
 
-      // Extract email from Google response
-      const googleEmail = credentialResponse?.credential?.email;
+      // Extract Google credential (the token sent by Google)
+      const googleToken = credentialResponse?.credential;
       
-      if (googleEmail) {
-        const data = {
-          email: googleEmail,  // Send email from Google login
-          password: "google_oauth_placeholder",  // Set a placeholder for password as Google login doesn't require one
-        };
+      if (googleToken) {
+        const data = { credential: googleToken }; // Send the Google token to the backend
 
-        // Print Google login data in the same format as manual login
-        console.log("Data being sent to backend (Google login):", { email: googleEmail, password: "google_oauth_placeholder" });
+        console.log("Data being sent to backend (Google login):", data);
 
-        const response = await fetch("http://localhost:8000/auth/login", {
+        const response = await fetch("http://localhost:8000/auth/google", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -88,12 +84,12 @@ const LoginPage = () => {
           const result = await response.json();
           console.log("Backend Response:", result);
           localStorage.setItem("access_token", result.access_token);
-          navigate("/landingpage"); // Redirect to the landing page
+          navigate("/landingpage"); // Redirect to landing page
         } else {
           setError("Google login failed");
         }
       } else {
-        setError("Google login failed. Email not found.");
+        setError("Google login failed. Token not found.");
       }
     } catch (error) {
       console.error("Error during Google login:", error);
@@ -149,28 +145,19 @@ const LoginPage = () => {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full px-4 py-2 bg-white text-blue-900 font-bold text-lg rounded-lg hover:bg-gray-100"
+            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg"
           >
             Login
           </button>
-
-          {/* Divider */}
-          <div className="flex items-center justify-between text-white text-sm my-4">
-            <span className="w-1/4 border-b border-white"></span>
-            <span>Or login with</span>
-            <span className="w-1/4 border-b border-white"></span>
-          </div>
-
-          {/* Google Login Button */}
-          <GoogleLogin
-            onSuccess={handleGoogleLogin} // Handle Google login success
-            onError={() => {
-              console.log("Google Login Failed");
-              setError("Google login failed. Please try again.");
-            }}
-            useOneTap // Optional: for one-tap login
-          />
         </form>
+
+        <div className="text-white mt-4">Or Login With</div>
+
+        {/* Google Login */}
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => setError("Google login failed")}
+        />
       </div>
     </div>
   );

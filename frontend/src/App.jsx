@@ -3,6 +3,7 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import GetStarted from './getStarted/getstarted';
+import LandingPage from './landingpage/landingpage';
 import Login from './loginpage/login';
 import SignupPage from './signupPage/signupPage';
 
@@ -15,7 +16,8 @@ function App() {
           <Route path="/" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/landingpage" element={<Login />} />
+          {/* <Route path="/landingpage" element={<Login />} /> */}
+          <Route path="/landingpage" element={<LandingPage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

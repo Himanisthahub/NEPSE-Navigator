@@ -1,9 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+import google.auth
 import jwt  # PyJWT for token handling
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from google.auth.transport.requests import Request
+from google.oauth2 import id_token  # Google OAuth2 token validation
 from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -26,8 +29,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # OAuth2PasswordBearer instance
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 # Pydantic models
 class User(BaseModel):
@@ -40,35 +42,28 @@ class User(BaseModel):
     class Config:
         fields = {"confirmPassword": {"exclude": True}}
 
-
 class LoginRequest(BaseModel):
     email: str
     password: str
-
 
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-
 class TokenData(BaseModel):
     username: Optional[str] = None
     exp: Optional[int] = None  # Include expiration for debugging
-
 
 class UserInfo(BaseModel):
     username: str
     exp: int
 
-
 # Helper functions
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-
 def verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
-
 
 def create_access_token(data: dict) -> str:
     """
@@ -78,7 +73,6 @@ def create_access_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 def verify_token(token: str, credentials_exception):
     """
@@ -95,7 +89,6 @@ def verify_token(token: str, credentials_exception):
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.InvalidTokenError:
         raise credentials_exception
-
 
 # Routes
 @router.post("/register")
@@ -118,7 +111,6 @@ async def register_user(user: User):
     result = await collection_name.insert_one(new_user)
     return {"message": "Account created successfully!", "user_id": str(result.inserted_id)}
 
-
 @router.post("/auth/login", response_model=Token)
 async def login(request: LoginRequest):
     user = await collection_name.find_one({"email": request.email})
@@ -137,6 +129,43 @@ async def login(request: LoginRequest):
     access_token = create_access_token(data={"sub": user["email"]})
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.post("/auth/google", response_model=Token)
+async def google_login(credential: dict):
+    """
+    Handle Google OAuth login.
+    - Extracts the Google token from the frontend, validates it,
+    - and generates an access token for the user.
+    """
+    google_token = credential.get("credential")
+    if not google_token:
+        raise HTTPException(status_code=400, detail="Google token not provided")
+
+    try:
+        # Verify the token with Google and get the user info
+        id_info = id_token.verify_oauth2_token(google_token, Request(), audience="886481282340-ua5r107135v0lc58kngkgsb0tvvb2kii.apps.googleusercontent.com")
+        email = id_info.get("email")
+
+        if not email:
+            raise HTTPException(status_code=400, detail="Google account email not found")
+
+        # Check if the user exists in the database or create a new one
+        user_db = await collection_name.find_one({"email": email})
+        if not user_db:
+            new_user = {
+                "firstName": id_info.get("given_name", ""),
+                "lastName": id_info.get("family_name", ""),
+                "email": email,
+                "password": "google_oauth_placeholder",  # Password is not required for OAuth users
+            }
+            result = await collection_name.insert_one(new_user)
+            user_db = await collection_name.find_one({"email": email})
+
+        # Generate JWT token for the user
+        access_token = create_access_token(data={"sub": user_db["email"]})
+        return {"access_token": access_token, "token_type": "bearer"}
+
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid Google token")
 
 @router.get("/protected", response_model=UserInfo)
 async def protected_route(token: str = Depends(oauth2_scheme)):

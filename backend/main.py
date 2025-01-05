@@ -3,15 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.auth import router as auth_router
 
 app = FastAPI(
-    title="FastAPI Authentication System",
-    description="A system for handling user authentication and registration.",
+    title="NEPSE-Navigator",
+    description="A system for finance",
     version="1.0.0",
 )
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Replace with your frontend's origin
+    allow_origins=["http://localhost:5173"],  
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
