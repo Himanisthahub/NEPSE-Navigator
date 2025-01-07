@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google"; // Import GoogleLogin component
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
-import logo from "../assets/money.png"; // Replace with the actual path to your NEPSE Navigator logo
+import logo from "../assets/money.png";
 
 const LoginPage = () => {
   const navigate = useNavigate(); // Initialize the navigate function
