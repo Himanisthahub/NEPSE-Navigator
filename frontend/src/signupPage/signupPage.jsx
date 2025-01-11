@@ -66,7 +66,6 @@ const SignupPage = () => {
           agreeToTerms: false,
         });
       } else {
-        // Check for specific error message when user already exists
         if (result.detail && result.detail.includes("already exists")) {
           alert("User already exists. Please try logging in.");
         } else {
@@ -87,7 +86,6 @@ const SignupPage = () => {
     console.log("Google Login Response:", response);
 
     try {
-      // Decode JWT for user information
       const payload = JSON.parse(atob(response.credential.split(".")[1]));
       console.log("Decoded User Info:", payload);
 
@@ -95,8 +93,8 @@ const SignupPage = () => {
         firstName: payload.given_name || "GoogleUser",
         lastName: payload.family_name || "User",
         email: payload.email,
-        password: "google_oauth_placeholder", // Placeholder for compatibility
-        confirmPassword: "google_oauth_placeholder", // Placeholder for compatibility
+        password: "google_oauth_placeholder",
+        confirmPassword: "google_oauth_placeholder",
       };
 
       await handleSignup(googleAuthData);
@@ -107,12 +105,14 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
+    <div className="flex h-screen items-center justify-center bg-customBlue">
       <div className="w-1/2 px-16 py-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-3xl font-bold mb-4 text-gray-800">Create an Account</h2>
+        <h2 className="text-3xl font-bold mb-4 text-customBlue">
+          Create an Account
+        </h2>
         <Link to={"/login"} className="mb-6 text-sm text-gray-600">
           Already Have an Account?{" "}
-          <span className="text-blue-500 underline">LOG IN</span>
+          <span className="text-customBlue underline">LOG IN</span>
         </Link>
         <form onSubmit={handleSubmit}>
           <div className="flex gap-4 mb-4">
@@ -122,7 +122,7 @@ const SignupPage = () => {
               placeholder="First Name"
               value={formData.firstName}
               onChange={handleInputChange}
-              className="w-1/2 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-1/2 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-customBlue"
               required
             />
             <input
@@ -131,7 +131,7 @@ const SignupPage = () => {
               placeholder="Last Name"
               value={formData.lastName}
               onChange={handleInputChange}
-              className="w-1/2 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-1/2 rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-customBlue"
               required
             />
           </div>
@@ -141,7 +141,7 @@ const SignupPage = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleInputChange}
-            className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-customBlue"
             required
           />
           <input
@@ -150,7 +150,7 @@ const SignupPage = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleInputChange}
-            className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-customBlue"
             required
           />
           <input
@@ -159,7 +159,7 @@ const SignupPage = () => {
             placeholder="Confirm Password"
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-customBlue"
             required
           />
           <div className="flex items-center mb-6">
@@ -169,7 +169,7 @@ const SignupPage = () => {
               name="agreeToTerms"
               checked={formData.agreeToTerms}
               onChange={handleInputChange}
-              className="mr-2 h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+              className="mr-2 h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-customBlue"
               required
             />
             <label htmlFor="terms" className="text-sm text-gray-600">
@@ -178,21 +178,26 @@ const SignupPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-500 px-4 py-2 text-white font-bold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full rounded-md bg-customBlue px-4 py-2 text-white font-bold hover:bg-customBlue focus:outline-none focus:ring-2 focus:ring-customBlue"
           >
             Create Account
           </button>
         </form>
 
-        {/* Google OAuth Button */}
-        <div className="mt-6 text-center">
-          <p className="mb-2 text-gray-600">Or login with</p>
-          <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={(error) => console.log("Google Login Error:", error)}
-            useOneTap // Optional: for showing Google One Tap
-          />
-        </div>
+        <div className="mt-6">
+  <p className="mb-4 text-center text-gray-600">Or login with</p>
+  <div className="flex justify-center">
+    <GoogleLogin
+      onSuccess={handleGoogleLogin}
+      onError={(error) => console.log("Google Login Error:", error)}
+      useOneTap
+      theme="outline" // Optional, you can adjust this if needed
+      size="large" // Adjust button size
+      className="w-full rounded-md bg-customBlue px-4 py-2 text-white font-bold hover:bg-customBlue focus:outline-none focus:ring-2 focus:ring-customBlue"
+    />
+  </div>
+</div>
+
       </div>
     </div>
   );

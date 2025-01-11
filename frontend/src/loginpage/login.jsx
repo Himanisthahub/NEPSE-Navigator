@@ -66,7 +66,7 @@ const LoginPage = () => {
 
       // Extract Google credential (the token sent by Google)
       const googleToken = credentialResponse?.credential;
-      
+
       if (googleToken) {
         const data = { credential: googleToken }; // Send the Google token to the backend
 
@@ -106,13 +106,13 @@ const LoginPage = () => {
           alt="NEPSE Navigator Logo"
           className="w-20 h-20 mb-4"
         />
-        <div className="text-4xl font-bold text-blue-900 mb-4 text-center">
+        <div className="text-4xl font-bold text-customBlue mb-4 text-center">
           Navigating the Nepal Stock Exchange with Ease
         </div>
       </div>
 
       {/* Right Section */}
-      <div className="w-1/2 bg-blue-900 flex flex-col justify-center items-center">
+      <div className="w-1/2 bg-customBlue flex flex-col justify-center items-center">
         <div className="text-white text-3xl font-semibold mb-4">Welcome Back!</div>
         <p className="text-white text-sm mb-6">Please Enter Your Details</p>
 
@@ -127,7 +127,7 @@ const LoginPage = () => {
             placeholder="Email"
             value={loginData.email}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-white text-blue-900 rounded-lg outline-none"
+            className="w-full px-4 py-2 bg-white text-customBlue rounded-lg outline-none focus:ring-2 focus:ring-yellow-500"
             required
           />
 
@@ -138,14 +138,14 @@ const LoginPage = () => {
             placeholder="Password"
             value={loginData.password}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-white text-blue-900 rounded-lg outline-none"
+            className="w-full px-4 py-2 bg-white text-customBlue rounded-lg outline-none focus:ring-2 focus:ring-yellow-500"
             required
           />
 
           {/* Login Button */}
           <button
             type="submit"
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg"
+            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
           >
             Login
           </button>

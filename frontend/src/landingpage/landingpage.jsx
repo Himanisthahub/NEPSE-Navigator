@@ -1,134 +1,99 @@
-import { Avatar, Box, Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const LandingPage = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const navigate = useNavigate();
 
+  // Handle sending a new message
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { user: true, text: input }]);
-      setMessages((prev) => [...prev, { user: false, text: "AI response..." }]); // Replace with AI response
+      // Add user message
+      setMessages((prev) => [...prev, { user: true, text: input }]);
+      // Add placeholder AI response (replace with actual AI integration)
+      setMessages((prev) => [...prev, { user: false, text: "AI response..." }]);
       setInput("");
     }
   };
 
   return (
-    <Box className="h-screen flex flex-col">
-      {/* Ticker and Logo */}
-      <HStack className="bg-gray-200 flex items-center justify-between px-4 py-2">
-        <Text fontSize="lg" fontWeight="bold">
-          NEPSE-Navigator
-        </Text>
-        <Box className="flex space-x-4 overflow-auto">
-          {/* ticker space */}
-        </Box>
-        <Avatar
-          size="md"
-          bg="blue.500"
-          color="white"
-          cursor="pointer"
+    <div className="h-screen flex flex-col">
+      {/* Header Section */}
+      <div className="bg-gray-200 px-4 py-2 flex items-center justify-between">
+        <h1 className="text-lg font-bold">NEPSE-Navigator</h1>
+        <div
+          className="w-10 h-10 bg-customBlue text-white rounded-full flex items-center justify-center cursor-pointer"
           onClick={() => navigate("/profile")}
-          onMouseEnter={() => console.log("Hover to show profile dropdown")}
-        />
-      </HStack>
+        >
+          P
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <HStack className="flex-grow">
-        {/* Left Section */}
-        <Box className="w-1/4 bg-gray-100 p-4">
-          <Button
+      {/* Main Content Section */}
+      <div className="flex flex-grow">
+        {/* Left Sidebar */}
+        <div className="w-1/4 bg-gray-100 p-4">
+          <button
             onClick={() => navigate("/premium")}
-            className="block w-full"
-            bg="blue.500"
-            color="white"
-            py="2"
-            borderRadius="md"
-            _hover={{ bg: "blue.600" }}
+            className="w-full bg-customBlue text-white py-2 px-4 rounded-md hover:bg-customBlue-dark"
           >
             Premium Plan
-          </Button>
-        </Box>
+          </button>
+        </div>
 
         {/* Chat Section */}
-        <Box className="flex-grow flex flex-col bg-gray-200">
-          <VStack
-            className="flex-grow p-4 overflow-auto"
-            align="stretch"
-            spacing="4"
-          >
-            {messages.map((msg, idx) =>
-              msg.user ? (
-                <Box
-                  key={idx}
-                  className="mb-2 p-2 rounded"
-                  bg="blue.500"
-                  color="white"
-                  alignSelf="end"
-                  borderRadius="md"
-                >
-                  {msg.text}
-                </Box>
-              ) : (
-                <Box
-                  key={idx}
-                  className="mb-2 p-2 rounded"
-                  bg="gray.300"
-                  color="black"
-                  alignSelf="start"
-                  borderRadius="md"
-                >
-                  {msg.text}
-                </Box>
-              )
-            )}
-          </VStack>
-          <HStack className="p-4">
-            <Input
-              className="flex-grow"
-              border="1px solid"
-              borderColor="gray.300"
-              borderRadius="md"
-              p="2"
-              mr="2"
+        <div className="flex-grow flex flex-col bg-gray-200">
+          {/* Chat Messages */}
+          <div className="flex-grow p-4 overflow-y-auto space-y-2">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`p-2 rounded-md max-w-xs ${
+                  msg.user
+                    ? "bg-customBlue text-white self-end"
+                    : "bg-gray-300 text-black self-start"
+                }`}
+              >
+                {msg.text}
+              </div>
+            ))}
+          </div>
+
+          {/* Input Section */}
+          <div className="p-4 flex gap-2 border-t border-gray-300 bg-gray-100">
+            <input
+              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Write your message..."
+              className="flex-grow border border-gray-300 p-2 rounded-md"
             />
-            <Button
+            <button
               onClick={handleSend}
-              bg="blue.500"
-              color="white"
-              px="4"
-              py="2"
-              borderRadius="md"
-              _hover={{ bg: "blue.600" }}
+              className="bg-customBlue text-white px-4 py-2 rounded-md hover:bg-customBlue-dark"
             >
               Send
-            </Button>
-          </HStack>
-        </Box>
+            </button>
+          </div>
+        </div>
 
-        {/* History Section */}
-        <Box className="w-1/4 bg-blue-800 text-white p-4">
-          <Text fontSize="lg" fontWeight="bold">
-            History
-          </Text>
-          <VStack align="stretch" mt="2" spacing="2">
+        {/* Right Sidebar - History */}
+        <div className="w-1/4 bg-customBlue text-white p-4">
+          <h2 className="text-lg font-bold mb-4">History</h2>
+          <div className="space-y-2">
             {messages
               .filter((msg) => msg.user)
               .map((msg, idx) => (
-                <Box key={idx} className="text-white">
+                <div key={idx} className="bg-customBlue-dark p-2 rounded-md">
                   {msg.text}
-                </Box>
+                </div>
               ))}
-          </VStack>
-        </Box>
-      </HStack>
-    </Box>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default Home;
+export default LandingPage;

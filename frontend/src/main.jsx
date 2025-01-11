@@ -1,13 +1,19 @@
-import { ChakraProvider } from '@chakra-ui/react'; // Import ChakraProvider
-import { StrictMode } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.jsx';
+import { BrowserRouter as Router } from 'react-router-dom';
+import App from './App';
 import './index.css';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <ChakraProvider> {/* Wrap the app with ChakraProvider */}
-      <App />
-    </ChakraProvider>
-  </StrictMode>
-);
+const root = document.getElementById('root');
+
+if (root) {
+  createRoot(root).render(
+    <React.StrictMode>
+      <Router>
+        <App />
+      </Router>
+    </React.StrictMode>
+  );
+} else {
+  console.error('Root element not found');
+}
