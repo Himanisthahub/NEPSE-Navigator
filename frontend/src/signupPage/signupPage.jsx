@@ -173,7 +173,15 @@ const SignupPage = () => {
               required
             />
             <label htmlFor="terms" className="text-sm text-gray-600">
-              I agree to the Terms & Conditions
+              I agree to the{" "}
+              <Link
+                to="/terms"
+                className="text-customBlue underline hover:text-customBlueHover"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms & Conditions
+              </Link>
             </label>
           </div>
           <button
@@ -185,19 +193,18 @@ const SignupPage = () => {
         </form>
 
         <div className="mt-6">
-  <p className="mb-4 text-center text-gray-600">Or login with</p>
-  <div className="flex justify-center">
-    <GoogleLogin
-      onSuccess={handleGoogleLogin}
-      onError={(error) => console.log("Google Login Error:", error)}
-      useOneTap
-      theme="outline" // Optional, you can adjust this if needed
-      size="large" // Adjust button size
-      className="w-full rounded-md bg-customBlue px-4 py-2 text-white font-bold hover:bg-customBlue focus:outline-none focus:ring-2 focus:ring-customBlue"
-    />
-  </div>
-</div>
-
+          <p className="mb-4 text-center text-gray-600">Or login with</p>
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={(error) => console.log("Google Login Error:", error)}
+              useOneTap
+              theme="outline"
+              size="large"
+              className="w-full rounded-md bg-customBlue px-4 py-2 text-white font-bold hover:bg-customBlue focus:outline-none focus:ring-2 focus:ring-customBlue"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

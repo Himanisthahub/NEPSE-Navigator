@@ -6,6 +6,7 @@ import GetStarted from './getStarted/getstarted';
 import LandingPage from './landingpage/landingpage';
 import Login from './loginpage/login';
 import SignupPage from './signupPage/signupPage';
+import TermsAndConditions from './terms/terms';
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/landingpage" element={<LandingPage />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        {/* <Route path="/profile" element={<Profile />} /> */}
       </Routes>
     </GoogleOAuthProvider>
   );

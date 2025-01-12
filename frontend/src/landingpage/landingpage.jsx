@@ -34,12 +34,59 @@ const LandingPage = () => {
       <div className="flex flex-grow">
         {/* Left Sidebar */}
         <div className="w-1/4 bg-gray-100 p-4">
-          <button
-            onClick={() => navigate("/premium")}
-            className="w-full bg-customBlue text-white py-2 px-4 rounded-md hover:bg-customBlue-dark"
+          {/* Premium Card Design */}
+          <div
+            className="w-[259px] h-[331px] bg-white shadow-md rounded-lg border border-gray-300 p-4 flex flex-col items-center"
+            style={{ fontFamily: "Aboreto, sans-serif" }}
           >
-            Premium Plan
-          </button>
+            <h2 className="text-[36px] font-regular text-customBlue mb-2">
+              PREMIUM
+            </h2>
+            <div className="text-[34px] text-customBlue mb-1">1000RS</div>
+            <div
+              className="text-[14px] text-gray-500 mb-4"
+              style={{ fontFamily: "Abel, sans-serif" }}
+            >
+              /month
+            </div>
+            <p className="text-[13px] text-gray-700 text-center mb-6">
+              Unlock the Future of Trading: <br />
+              Upgrade to Premium on Nepse Navigator Now
+            </p>
+            <ul className="text-[10px] text-gray-700 space-y-2 mb-6">
+              <li className="flex items-center">
+                <div
+                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
+                >
+                  ✓
+                </div>
+                Stock Comparison
+              </li>
+              <li className="flex items-center">
+                <div
+                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
+                >
+                  ✓
+                </div>
+                Technical Analysis
+              </li>
+              <li className="flex items-center">
+                <div
+                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
+                >
+                  ✓
+                </div>
+                Stock Comparison
+              </li>
+            </ul>
+            <button
+              onClick={() => navigate("/premium")}
+              className="w-full bg-customBlue text-white py-2 rounded-md hover:bg-customBlue-dark"
+              style={{ fontFamily: "Abel, sans-serif" }}
+            >
+              Upgrade to Premium
+            </button>
+          </div>
         </div>
 
         {/* Chat Section */}
