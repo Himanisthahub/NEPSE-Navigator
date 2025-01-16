@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/money.png";
 
 const LandingPage = () => {
   const [messages, setMessages] = useState([]);
@@ -9,9 +10,7 @@ const LandingPage = () => {
   // Handle sending a new message
   const handleSend = () => {
     if (input.trim()) {
-      // Add user message
       setMessages((prev) => [...prev, { user: true, text: input }]);
-      // Add placeholder AI response (replace with actual AI integration)
       setMessages((prev) => [...prev, { user: false, text: "AI response..." }]);
       setInput("");
     }
@@ -21,7 +20,14 @@ const LandingPage = () => {
     <div className="h-screen flex flex-col">
       {/* Header Section */}
       <div className="bg-gray-200 px-4 py-2 flex items-center justify-between">
-        <h1 className="text-lg font-bold">NEPSE-Navigator</h1>
+        <div className="flex items-center">
+          <img
+            src={logo}
+            alt="Nepse Navigator Logo"
+            className="w-8 h-8 mr-2"
+          />
+          <h1 className="text-lg font-bold">NEPSE-Navigator</h1>
+        </div>
         <div
           className="w-10 h-10 bg-customBlue text-white rounded-full flex items-center justify-center cursor-pointer"
           onClick={() => navigate("/profile")}

@@ -1,166 +1,153 @@
-import { GoogleLogin } from "@react-oauth/google"; // Import GoogleLogin component
+import logo from ".../assets/money.png";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
-import logo from "../assets/money.png";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
-  const navigate = useNavigate(); // Initialize the navigate function
+const LandingPage = () => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const navigate = useNavigate();
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-
-  // Handle input changes for login form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
-  };
-
-  // Reusable function to handle login
-  const handleLogin = async (data) => {
-    try {
-      console.log("Data being sent to backend:", data); // Print data sent to backend
-      const response = await fetch("http://localhost:8000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Backend Response:", result); // Print backend response
-        localStorage.setItem("access_token", result.access_token);
-
-        // Redirect to landing page
-        navigate("/landingpage");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || "Invalid credentials");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError("An error occurred. Please try again later.");
-    }
-  };
-
-  // Handle manual login submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin({
-      email: loginData.email,
-      password: loginData.password,
-    });
-  };
-
-  // Handle Google login response
-  const handleGoogleLogin = async (credentialResponse) => {
-    try {
-      console.log("Google credential response:", credentialResponse);
-
-      // Extract Google credential (the token sent by Google)
-      const googleToken = credentialResponse?.credential;
-
-      if (googleToken) {
-        const data = { credential: googleToken }; // Send the Google token to the backend
-
-        console.log("Data being sent to backend (Google login):", data);
-
-        const response = await fetch("http://localhost:8000/auth/google", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          console.log("Backend Response:", result);
-          localStorage.setItem("access_token", result.access_token);
-          navigate("/landingpage"); // Redirect to landing page
-        } else {
-          setError("Google login failed");
-        }
-      } else {
-        setError("Google login failed. Token not found.");
-      }
-    } catch (error) {
-      console.error("Error during Google login:", error);
-      setError("An error occurred during Google login. Please try again later.");
+  // Handle sending a new message
+  const handleSend = () => {
+    if (input.trim()) {
+      // Add user message
+      setMessages((prev) => [...prev, { user: true, text: input }]);
+      setMessages((prev) => [...prev, { user: false, text: "AI response..." }]);
+      setInput("");
     }
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Left Section */}
-      <div className="w-1/2 bg-white flex flex-col justify-center items-center">
-        <img
-          src={logo}
-          alt="NEPSE Navigator Logo"
-          className="w-20 h-20 mb-4"
-        />
-        <div className="text-4xl font-bold text-customBlue mb-4 text-center">
-          Navigating the Nepal Stock Exchange with Ease
+    <div className="h-screen flex flex-col">
+      {/* Header Section */}
+      <div className="bg-gray-200 px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center">
+          <img
+            src={logo}
+            alt="Nepse Navigator Logo"
+            className="w-8 h-8 mr-2"
+          />
+          <h1 className="text-lg font-bold">NEPSE-Navigator</h1>
+        </div>
+        <div
+          className="w-10 h-10 bg-customBlue text-white rounded-full flex items-center justify-center cursor-pointer"
+          onClick={() => navigate("/profile")}
+        >
+          P
         </div>
       </div>
 
-      {/* Right Section */}
-      <div className="w-1/2 bg-customBlue flex flex-col justify-center items-center">
-        <div className="text-white text-3xl font-semibold mb-4">Welcome Back!</div>
-        <p className="text-white text-sm mb-6">Please Enter Your Details</p>
-
-        {/* Display error if any */}
-        {error && <div className="text-red-500 mb-4">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="w-3/4 flex flex-col gap-4">
-          {/* Email Input */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={loginData.email}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-white text-customBlue rounded-lg outline-none focus:ring-2 focus:ring-yellow-500"
-            required
-          />
-
-          {/* Password Input */}
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={loginData.password}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-white text-customBlue rounded-lg outline-none focus:ring-2 focus:ring-yellow-500"
-            required
-          />
-
-          {/* Login Button */}
-          <button
-            type="submit"
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+      {/* Main Content Section */}
+      <div className="flex flex-grow">
+        {/* Left Sidebar */}
+        <div className="w-1/4 bg-gray-100 p-4">
+          {/* Premium Card Design */}
+          <div
+            className="w-[259px] h-[331px] bg-white shadow-md rounded-lg border border-gray-300 p-4 flex flex-col items-center"
+            style={{ fontFamily: "Aboreto, sans-serif" }}
           >
-            Login
-          </button>
-        </form>
+            <h2 className="text-[36px] font-regular text-customBlue mb-2">
+              PREMIUM
+            </h2>
+            <div className="text-[34px] text-customBlue mb-1">1000RS</div>
+            <div
+              className="text-[14px] text-gray-500 mb-4"
+              style={{ fontFamily: "Abel, sans-serif" }}
+            >
+              /month
+            </div>
+            <p className="text-[13px] text-gray-700 text-center mb-6">
+              Unlock the Future of Trading: <br />
+              Upgrade to Premium on Nepse Navigator Now
+            </p>
+            <ul className="text-[10px] text-gray-700 space-y-2 mb-6">
+              <li className="flex items-center">
+                <div
+                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
+                >
+                  ✓
+                </div>
+                Stock Comparison
+              </li>
+              <li className="flex items-center">
+                <div
+                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
+                >
+                  ✓
+                </div>
+                Technical Analysis
+              </li>
+              <li className="flex items-center">
+                <div
+                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
+                >
+                  ✓
+                </div>
+                Stock Comparison
+              </li>
+            </ul>
+            <button
+              onClick={() => navigate("/premium")}
+              className="w-full bg-customBlue text-white py-2 rounded-md hover:bg-customBlue-dark"
+              style={{ fontFamily: "Abel, sans-serif" }}
+            >
+              Upgrade to Premium
+            </button>
+          </div>
+        </div>
 
-        <div className="text-white mt-4">Or Login With</div>
+        {/* Chat Section */}
+        <div className="flex-grow flex flex-col bg-gray-200">
+          {/* Chat Messages */}
+          <div className="flex-grow p-4 overflow-y-auto space-y-2">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`p-2 rounded-md max-w-xs ${
+                  msg.user
+                    ? "bg-customBlue text-white self-end"
+                    : "bg-gray-300 text-black self-start"
+                }`}
+              >
+                {msg.text}
+              </div>
+            ))}
+          </div>
 
-        {/* Google Login */}
-        <GoogleLogin
-          onSuccess={handleGoogleLogin}
-          onError={() => setError("Google login failed")}
-        />
+          {/* Input Section */}
+          <div className="p-4 flex gap-2 border-t border-gray-300 bg-gray-100">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Write your message..."
+              className="flex-grow border border-gray-300 p-2 rounded-md"
+            />
+            <button
+              onClick={handleSend}
+              className="bg-customBlue text-white px-4 py-2 rounded-md hover:bg-customBlue-dark"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+
+        {/* Right Sidebar - History */}
+        <div className="w-1/4 bg-customBlue text-white p-4">
+          <h2 className="text-lg font-bold mb-4">History</h2>
+          <div className="space-y-2">
+            {messages
+              .filter((msg) => msg.user)
+              .map((msg, idx) => (
+                <div key={idx} className="bg-customBlue-dark p-2 rounded-md">
+                  {msg.text}
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default LandingPage;
