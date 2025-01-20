@@ -17,6 +17,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/landingpage" element={<LandingPage />} />
         <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/get-started" element={<GetStarted />} />
         {/* <Route path="/profile" element={<Profile />} /> */}
       </Routes>
     </GoogleOAuthProvider>

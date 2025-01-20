@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logoutIcon from "../assets/logoutt.png";
 import logo from "../assets/money.png";
 
 const LandingPage = () => {
@@ -17,7 +18,10 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div
+      className="h-screen flex flex-col font-sans" // Apply font globally here
+      style={{ fontFamily: "Abel, sans-serif" }} // Ensure same font is used everywhere
+    >
       {/* Header Section */}
       <div className="bg-gray-200 px-4 py-2 flex items-center justify-between">
         <div className="flex items-center">
@@ -39,58 +43,38 @@ const LandingPage = () => {
       {/* Main Content Section */}
       <div className="flex flex-grow">
         {/* Left Sidebar */}
-        <div className="w-1/4 bg-gray-100 p-4">
-          {/* Premium Card Design */}
-          <div
-            className="w-[259px] h-[331px] bg-white shadow-md rounded-lg border border-gray-300 p-4 flex flex-col items-center"
-            style={{ fontFamily: "Aboreto, sans-serif" }}
+        <div className="w-1/4 bg-gray-100 p-4 flex flex-col justify-between">
+          <button
+            onClick={() => navigate("/premium")}
+            className="w-full bg-customBlue text-white py-2 rounded-md hover:bg-customBlue-dark"
+            style={{
+              height: "67px",
+              borderRadius: "16px",
+            }}
           >
-            <h2 className="text-[36px] font-regular text-customBlue mb-2">
-              PREMIUM
-            </h2>
-            <div className="text-[34px] text-customBlue mb-1">1000RS</div>
-            <div
-              className="text-[14px] text-gray-500 mb-4"
-              style={{ fontFamily: "Abel, sans-serif" }}
-            >
-              /month
-            </div>
-            <p className="text-[13px] text-gray-700 text-center mb-6">
-              Unlock the Future of Trading: <br />
-              Upgrade to Premium on Nepse Navigator Now
-            </p>
-            <ul className="text-[10px] text-gray-700 space-y-2 mb-6">
-              <li className="flex items-center">
-                <div
-                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
-                >
-                  ✓
-                </div>
-                Stock Comparison
-              </li>
-              <li className="flex items-center">
-                <div
-                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
-                >
-                  ✓
-                </div>
-                Technical Analysis
-              </li>
-              <li className="flex items-center">
-                <div
-                  className="w-4 h-4 bg-customBlue rounded-full flex items-center justify-center text-white mr-2"
-                >
-                  ✓
-                </div>
-                Stock Comparison
-              </li>
-            </ul>
+            Upgrade to Premium
+          </button>
+
+          {/* Log Out Button */}
+          <div
+            className="flex justify-center mt-auto"
+            style={{ marginBottom: "16px" }}
+          >
             <button
-              onClick={() => navigate("/premium")}
-              className="w-full bg-customBlue text-white py-2 rounded-md hover:bg-customBlue-dark"
-              style={{ fontFamily: "Abel, sans-serif" }}
+              className="flex items-center justify-center bg-customBlue text-white rounded-md"
+              style={{
+                width: "195px",
+                height: "67px",
+                borderRadius: "16px",
+              }}
+              onClick={() => navigate("/get-started")}
             >
-              Upgrade to Premium
+              <img
+                src={logoutIcon}
+                alt="Log Out Icon"
+                className="w-6 h-6 mr-2"
+              />
+              <span className="font-medium">Log Out</span>
             </button>
           </div>
         </div>
