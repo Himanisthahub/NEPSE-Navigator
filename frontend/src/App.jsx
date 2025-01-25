@@ -5,13 +5,13 @@ import { Route, Routes } from "react-router-dom";
 import GetStarted from "./getStarted/getstarted";
 import LandingPage from "./landingpage/landingpage";
 import Login from "./loginpage/login";
-import Profile from "./profile/profile"; // Capitalized component
+import Profile from "./profile/profile";
 import SignupPage from "./signupPage/signupPage";
 import TermsAndConditions from "./terms/terms";
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+    <GoogleOAuthProvider clientId="886481282340-ua5r107135v0lc58kngkgsb0tvvb2kii.apps.googleusercontent.com">
       <Routes>
         <Route path="/" element={<GetStarted />} />
         <Route path="/login" element={<Login />} />
