@@ -19,22 +19,18 @@ const LandingPage = () => {
 
   return (
     <div
-      className="h-screen flex flex-col font-sans" // Apply font globally here
-      style={{ fontFamily: "Abel, sans-serif" }} // Ensure same font is used everywhere
+      className="h-screen flex flex-col font-sans"
+      style={{ fontFamily: "Abel, sans-serif" }}
     >
       {/* Header Section */}
       <div className="bg-gray-200 px-4 py-2 flex items-center justify-between">
         <div className="flex items-center">
-          <img
-            src={logo}
-            alt="Nepse Navigator Logo"
-            className="w-8 h-8 mr-2"
-          />
+          <img src={logo} alt="Nepse Navigator Logo" className="w-8 h-8 mr-2" />
           <h1 className="text-lg font-bold">NEPSE-Navigator</h1>
         </div>
         <div
           className="w-10 h-10 bg-customBlue text-white rounded-full flex items-center justify-center cursor-pointer"
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/profile")} // Navigate to profile
         >
           P
         </div>

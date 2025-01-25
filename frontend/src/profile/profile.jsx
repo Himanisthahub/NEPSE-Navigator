@@ -1,246 +1,163 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const Settings = () => {
-  const [userInfo, setUserInfo] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedUserInfo, setEditedUserInfo] = useState({});
-  const [isPhotoChanged, setIsPhotoChanged] = useState(false);
-  const [photoURL, setPhotoURL] = useState(null);
+// Import SVG assets (replace these paths with your actual SVG files)
+import PencilIcon from "./assets/pencil.svg";
+import PlusIcon from "./assets/plus.svg";
+import TrashIcon from "./assets/trash.svg";
+import UploadIcon from "./assets/upload.svg";
 
-  const token = localStorage.getItem("token");
+function ProfileSettings() {
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
-  // Fetch user info
-  const fetchUserInfo = async () => {
-    try {
-      const response = await fetch("http://localhost:5173/user-info", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (data.success) {
-        setUserInfo(data.user);
-        setEditedUserInfo(data.user);
-      }
-    } catch (error) {
-      console.error(error);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  // Handle input change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedUserInfo((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  // Handle submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (editedUserInfo.oldPassword === editedUserInfo.newPassword) {
-      try {
-        const formData = new FormData();
-        formData.append("fullname", editedUserInfo.fullname);
-        formData.append("email", editedUserInfo.email);
-        formData.append("phone", editedUserInfo.phone);
-        formData.append("address", editedUserInfo.address);
-        formData.append("oldPassword", editedUserInfo.oldPassword);
-        formData.append("newPassword", editedUserInfo.newPassword);
-        formData.append("userPhoto", editedUserInfo.userPhoto);
-
-        const response = await fetch("http://localhost:4000/update-user-info", {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        });
-        const data = await response.json();
-        if (data.success) {
-          setUserInfo(editedUserInfo);
-          setIsEditing(false);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      alert("Incorrect Old Password");
-    }
-  };
-
-  useEffect(() => {
-    fetchUserInfo();
-  }, []);
-
-  // Handle photo change
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    setEditedUserInfo((prevState) => ({
-      ...prevState,
-      userPhoto: file,
-    }));
-    setIsPhotoChanged(true);
-
-    const photoURL = URL.createObjectURL(file);
-    setPhotoURL(photoURL);
+  const handleDeletePicture = () => {
+    setProfileImage(null);
   };
 
   return (
-    <div className="mt-14 mx-8">
-      <h1 className="text-4xl font-bold mb-6">Settings</h1>
-      <div className="bg-white shadow-lg p-8 rounded-lg">
-        {isEditing ? (
-          <form
-            onSubmit={handleSubmit}
-            encType="multipart/form-data"
-            className="space-y-6"
-          >
-            {/* User Photo */}
-            <div className="flex items-center">
-              <img
-                className="w-32 h-32 rounded-full object-cover"
-                src={
-                  photoURL ||
-                  (userInfo.photo
-                    ? `http://localhost:5173/${userInfo.photo}`
-                    : "https://via.placeholder.com/150")
-                }
-                alt="User"
-              />
-              {isPhotoChanged ? (
-                <div className="ml-4">
-                  <input
-                    type="file"
-                    onChange={handlePhotoChange}
-                    className="block mt-2"
-                  />
-                  <button
-                    type="button"
-                    className="mt-2 text-sm text-red-500 underline"
-                    onClick={() => setIsPhotoChanged(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
+    <div className="w-full max-w-3xl mx-auto p-6">
+      <h1 className="text-2xl font-semibold text-blue-600 mb-8">Profile Picture</h1>
+
+      <div className="grid gap-8 md:grid-cols-[240px_1fr]">
+        {/* Profile Picture Section */}
+        <div className="space-y-4">
+          <div className="relative">
+            <div className="w-[216px] h-[216px] rounded-full bg-gray-200 relative overflow-hidden">
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-full"
+                />
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsPhotoChanged(true)}
-                  className="ml-4 bg-blue-600 text-white px-4 py-2 rounded-md"
-                >
-                  Change Photo
-                </button>
+                <div className="flex items-center justify-center h-full">
+                  <span className="text-gray-500">No image</span>
+                </div>
               )}
+              <button
+                className="absolute bottom-2 right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center"
+                onClick={() => document.getElementById("picture-upload")?.click()}
+              >
+                <img src={PlusIcon} alt="Add" className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            onClick={() => document.getElementById("picture-upload")?.click()}
+          >
+            <img src={UploadIcon} alt="Upload" className="inline-block w-4 h-4 mr-2" />
+            Upload Picture
+          </button>
+          <input
+            type="file"
+            id="picture-upload"
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageUpload}
+          />
+
+          <button
+            className="w-full border border-red-500 text-red-500 py-2 px-4 rounded hover:bg-red-50"
+            onClick={handleDeletePicture}
+          >
+            <img src={TrashIcon} alt="Delete" className="inline-block w-4 h-4 mr-2" />
+            Delete Picture
+          </button>
+        </div>
+
+        {/* Form Section */}
+        <div className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label htmlFor="first-name" className="text-blue-600 font-medium">
+                First Name
+              </label>
+              <div className="relative">
+                <input
+                  id="first-name"
+                  defaultValue="Himani"
+                  className="w-full border border-gray-300 rounded px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <img src={PencilIcon} alt="Edit" className="w-4 h-4 text-blue-600" />
+                </button>
+              </div>
             </div>
 
-            {/* Input Fields */}
-            <div>
-              <label className="block text-gray-700">Username:</label>
-              <input
-                type="text"
-                name="fullname"
-                value={editedUserInfo.fullname}
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
-              />
+            <div className="space-y-2">
+              <label htmlFor="last-name" className="text-blue-600 font-medium">
+                Last Name
+              </label>
+              <div className="relative">
+                <input
+                  id="last-name"
+                  defaultValue="Himani"
+                  className="w-full border border-gray-300 rounded px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <img src={PencilIcon} alt="Edit" className="w-4 h-4 text-blue-600" />
+                </button>
+              </div>
             </div>
-            <div>
-              <label className="block text-gray-700">Email:</label>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-blue-600 font-medium">
+              Email
+            </label>
+            <div className="relative">
               <input
+                id="email"
+                defaultValue="himanistha78@gmail.com"
                 type="email"
-                name="email"
-                value={editedUserInfo.email}
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
+                className="w-full border border-gray-300 rounded px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <img src={PencilIcon} alt="Edit" className="w-4 h-4 text-blue-600" />
+              </button>
             </div>
-            <div>
-              <label className="block text-gray-700">Phone:</label>
-              <input
-                type="text"
-                name="phone"
-                value={editedUserInfo.phone}
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Address:</label>
-              <input
-                type="text"
-                name="address"
-                value={editedUserInfo.address}
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Old Password:</label>
-              <input
-                type="password"
-                name="oldPassword"
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">New Password:</label>
-              <input
-                type="password"
-                name="newPassword"
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full"
-              />
-            </div>
+          </div>
 
-            {/* Buttons */}
-            <div className="flex space-x-4">
-              <button
-                type="submit"
-                className="bg-green-600 text-white px-6 py-2 rounded-md"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                className="bg-gray-400 text-white px-6 py-2 rounded-md"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="text-center">
-            <img
-              className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
-              src={
-                userInfo.photo
-                  ? `http://localhost:5173/${userInfo.photo}`
-                  : "https://via.placeholder.com/150"
-              }
-              alt="User"
-            />
-            <h2 className="text-xl font-semibold mb-2">{userInfo.fullname}</h2>
-            <p className="text-gray-600">Email: {userInfo.email}</p>
-            <p className="text-gray-600">Contact: {userInfo.phone}</p>
-            <p className="text-gray-600">Address: {userInfo.address}</p>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-600 text-white px-6 py-2 mt-4 rounded-md"
-            >
-              Edit Profile
+          <div className="space-y-2">
+            <label htmlFor="password" className="text-blue-600 font-medium">
+              Password
+            </label>
+            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+              Change Password
             </button>
           </div>
-        )}
+
+          <div className="space-y-2">
+            <label htmlFor="remove-account" className="text-blue-600 font-medium">
+              Remove Account
+            </label>
+            <button className="w-full border border-red-500 text-red-500 py-2 px-4 rounded hover:bg-red-50">
+              <img src={TrashIcon} alt="Delete" className="inline-block w-4 h-4 mr-2" />
+              Remove Account
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-end mt-8">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+          Save
+        </button>
       </div>
     </div>
   );
-};
+}
 
-export default profile;
+export default Profile;
