@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import GetStarted from "./getStarted/getstarted";
 import LandingPage from "./landingpage/landingpage";
 import Login from "./loginpage/login";
+import Premium from "./premium/premium";
 import Profile from "./profile/profile";
 import SignupPage from "./signupPage/signupPage";
 import TermsAndConditions from "./terms/terms";
@@ -20,6 +21,7 @@ function App() {
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/premium" element={<Premium />} />
       </Routes>
     </GoogleOAuthProvider>
   );

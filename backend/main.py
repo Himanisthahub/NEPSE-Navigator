@@ -1,6 +1,13 @@
+import os
+import sys
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.auth import router as auth_router
+
+# Add the project root directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from backend.routes.auth_routes import router as auth_router
 
 app = FastAPI(
     title="NEPSE-Navigator",
