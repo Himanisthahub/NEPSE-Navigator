@@ -72,7 +72,7 @@ const LoginPage = () => {
 
         console.log("Data being sent to backend (Google login):", data);
 
-        const response = await fetch("http://localhost:8000/auth/google", {
+        const response = await fetch("http://localhost:8000/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -1,7 +1,37 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/money.png";
 
 const Premium = () => {
+  const navigate = useNavigate();
+
+  const handleUpgrade = async () => {
+    const transactionId = "txn_" + Date.now(); // Unique transaction ID
+    const amount = 1000;
+    const productName = "Nepse Navigator Premium Plan";
+
+    // Initiate payment request
+    const response = await fetch("http://localhost:8000/api/initiate-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        method: "esewa", // Change to "khalti" for Khalti payment
+        amount,
+        productName,
+        transactionId,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.esewaConfig) {
+      // Redirect to eSewa Payment Page
+      window.location.href = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+    } else if (data.payment_url) {
+      // Redirect to Khalti Payment Page
+      window.location.href = data.payment_url;
+    }
+  };
+
   return (
     <div className="flex flex-col items-center p-4 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -30,9 +60,7 @@ const Premium = () => {
       {/* Plans */}
       <div className="flex space-x-8">
         {/* Free Plan */}
-        <div
-          className="w-[260px] h-[360px] border-2 border-customBlue rounded-2xl p-4 flex flex-col items-center"
-        >
+        <div className="w-[260px] h-[360px] border-2 border-customBlue rounded-2xl p-4 flex flex-col items-center">
           <h2 className="text-3xl font-aboreto mb-2 text-customBlue">FREE</h2>
           <p className="text-xl font-aboreto mb-4 text-customBlue">0RS/month</p>
           <ul className="text-customBlue font-abel space-y-2">
@@ -50,9 +78,7 @@ const Premium = () => {
         </div>
 
         {/* Premium Plan */}
-        <div
-          className="w-[260px] h-[360px] border-2 border-customBlue rounded-2xl p-4 flex flex-col items-center"
-        >
+        <div className="w-[260px] h-[360px] border-2 border-customBlue rounded-2xl p-4 flex flex-col items-center">
           <h2 className="text-3xl font-aboreto mb-2 text-customBlue">PREMIUM</h2>
           <p className="text-xl font-aboreto mb-4 text-customBlue">1000RS/month</p>
           <p className="text-customBlue font-abel text-center mb-4">
@@ -65,7 +91,7 @@ const Premium = () => {
           </ul>
           <button
             className="mt-4 bg-customBlue text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700"
-            onClick={() => window.location.href = "/payment"}
+            onClick={handleUpgrade}
           >
             Upgrade to Premium
           </button>
