@@ -27,6 +27,9 @@ app.add_middleware(
 # Include the authentication routes
 app.include_router(auth_router)
 
+# Include Payment Routes
+app.include_router(payments_router, prefix="/api")
+
 @app.get("/", tags=["Root"])
 async def root():
     """
