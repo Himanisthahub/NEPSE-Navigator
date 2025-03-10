@@ -1,0 +1,8 @@
+torch
+transformers
+langchain
+sentence-transformers
+faiss-cpu
+flagembedding
+requests
+flagai
