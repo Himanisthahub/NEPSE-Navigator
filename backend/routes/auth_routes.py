@@ -11,7 +11,7 @@ from ..services.auth_services import (create_access_token, hash_password,
 # Initialize router
 router = APIRouter()
 
-# Database client
+# Database clients
 client = AsyncIOMotorClient(settings.MONGODB_URI)
 db = client.userdata
 collection_name = db["users"]
